@@ -39,7 +39,7 @@ namespace SpaceEngineers
         public void Main(string argument, UpdateType updateType)
         {
 
-            //  Lautsprechererkennung
+            // ------------------  Lautsprechererkennung ---------------------
 
             var Laut = GridTerminalSystem.GetBlockWithName("Lautsprecherblock");
             if (Laut == null)
@@ -48,7 +48,16 @@ namespace SpaceEngineers
             }
             IMySoundBlock mySoundBlock = Laut as IMySoundBlock;
 
-            //  Türenerfassung
+            //  ------------------ LCD Inizial --------------------
+            
+            if (GridTerminalSystem.GetBlockGroupWithName("WideLCDPanel") == null){
+                Echo("LCD-Panel nicht gefunden");
+            }else
+            {
+                IMyTextPanel mylcdPanel = GridTerminalSystem.GetBlockGroupWithName("WideLCDPanel") as IMyTextPanel;
+            }
+
+            // ------------------- Türenerfassung ------------------
 
             var doorIn = GridTerminalSystem.GetBlockWithName("SchlaeuseInnen");
             if (doorIn == null)
@@ -65,7 +74,7 @@ namespace SpaceEngineers
             }
             IMyDoor myDoorOut = doorOut as IMyDoor;
 
-            //  Lüftererfassung
+            // ------------------- Lüftererfassung -------------------------
 
             IMyAirVent myLuftschleuse = GridTerminalSystem.GetBlockWithName("Luftschleuse") as IMyAirVent;
             if (myLuftschleuse == null)
@@ -96,25 +105,43 @@ namespace SpaceEngineers
 
             //-------------- Testbereich --------------------
 
-            bool ventsPress = myLuftschleuse.GetValue<T>("PressurizationEnabled");
 
-            if (ventsPress == true)
+            if (myLuftschleuse.Depressurize)
             {
+                Echo("Schleuse hat keine Luft");
+            }
+            else 
+            { 
                 Echo("Schleuse hat Luft");
             }
-            else { Echo("Schleuse hat keine Luft");
-            }
 
-            Echo("Schleuse Status =" + ventsPress);
-            
-            // neue zeile
-        
+            Echo("Schleuse entlüftet = " + myLuftschleuse.Depressurize);
+
+          
 
         }
 
+        
+        public void checkButtonPanel(){
+            
+                if (GridTerminalSystem.GetBlockGroupWithName("Schalttafel02") == null){
+                    Echo("Tafel nicht gefunden");
+                }else
+                {
+                    IMyButtonPanel myButtonPanel = GridTerminalSystem.GetBlockGroupWithName("Schalttafel02") as IMyButtonPanel;
+                    Echo("AnyoneCanUse = " + myButtonPanel.AnyoneCanUse);
+                }
+
+                
+        }
+
+
+        
 
         //
         // ... und diesem muss in den Editor des programmierbaren Block kopiert werden
         //
     }
+
+
 }
